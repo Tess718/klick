@@ -45,7 +45,7 @@ export async function updateProfile(formData: FormData) {
     data: { name: parsed.data.name },
   });
 
-  await unstable_update({ name: parsed.data.name });
+  await unstable_update({ user: { name: parsed.data.name } });
 
   revalidatePath("/dashboard");
   return { success: true, message: "Profile updated successfully." };
