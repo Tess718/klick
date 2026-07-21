@@ -4,12 +4,21 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { getLinkAnalytics } from "@/lib/analytics";
 import { ClicksOverTimeChart, DeviceBreakdownChart } from "./charts";
-import { ArrowLeftIcon, CalendarIcon, LinkIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, CalendarIcon, LinkIcon, ArrowTopRightOnSquareIcon, CursorArrowRaysIcon, GlobeAltIcon, ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import { CopyButton } from "../../copy-button";
 import { QRCodeDisplay } from "./qr-code";
 import { WorldMapChart } from "./map";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default async function LinkAnalyticsPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -33,11 +42,18 @@ export default async function LinkAnalyticsPage({ params }: { params: Promise<{ 
 
   return (
     <div className="max-w-6xl mx-auto w-full pb-10">
-      <div className="mb-6 flex items-center gap-4">
-        <Button variant="outline" size="icon" render={<Link href="/dashboard" />}>
-          <ArrowLeftIcon className="w-5 h-5" />
-        </Button>
-        <h1 className="text-2xl font-bold tracking-tight">Link Analytics</h1>
+      <div className="mb-6">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{link.slug}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </div>
 
       {/* Header Info */}
@@ -81,13 +97,50 @@ export default async function LinkAnalyticsPage({ params }: { params: Promise<{ 
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Total Clicks</CardTitle>
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+              <CursorArrowRaysIcon className="w-5 h-5" /> Total Clicks
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{analytics.totalClicks.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{analytics.totalClicks.toLocaleString()}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+              <CalendarIcon className="w-5 h-5" /> Clicks Today
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{analytics.clicksToday.toLocaleString()}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+              <GlobeAltIcon className="w-5 h-5" /> Countries Reached
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{analytics.countryBreakdown.length.toLocaleString()}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+              <ComputerDesktopIcon className="w-5 h-5" /> Top Device
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold capitalize">
+              {analytics.deviceBreakdown.length > 0 ? analytics.deviceBreakdown[0].device : "N/A"}
+            </div>
           </CardContent>
         </Card>
       </div>

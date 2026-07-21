@@ -9,8 +9,9 @@ export const authConfig = {
         token.id = user.id;
         token.name = user.name;
       }
-      if (trigger === "update" && session?.name) {
-        token.name = session.name;
+      if (trigger === "update") {
+        if (session?.user?.name) token.name = session.user.name;
+        if (session?.name) token.name = session.name;
       }
       return token;
     },

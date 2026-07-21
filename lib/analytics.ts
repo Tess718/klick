@@ -4,10 +4,17 @@ import { prisma } from "@/lib/prisma";
 // read path. Short TTL since click data updates frequently, but the dashboard
 // doesn't need per-request freshness on every chart re-render.
 export async function getLinkAnalytics(linkId: string) {
-  "use cache";
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  const [totalClicks, deviceBreakdown, countryBreakdown, clicksByDay] = await Promise.all([
+  const [totalClicks, clicksToday, deviceBreakdown, countryBreakdown, clicksByDay] = await Promise.all([
     prisma.click.count({ where: { linkId } }),
+    prisma.click.count({
+      where: {
+        linkId,
+        timestamp: { gte: today },
+      },
+    }),
     prisma.click.groupBy({
       by: ["device"],
       where: { linkId },
@@ -27,7 +34,7 @@ export async function getLinkAnalytics(linkId: string) {
     `,
   ]);
 
-  return { totalClicks, deviceBreakdown, countryBreakdown, clicksByDay };
+  return { totalClicks, clicksToday, deviceBreakdown, countryBreakdown, clicksByDay };
 }
 
 export async function getGlobalAnalytics(userId: string) {

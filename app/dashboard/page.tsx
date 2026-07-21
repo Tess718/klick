@@ -91,10 +91,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     orderBy: { createdAt: "desc" },
   });
 
+  const dbUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true },
+  });
+
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full pb-10">
       <AutoRefresh />
-      <Greeting name={session.user.name ?? null} />
+      <Greeting name={dbUser?.name ?? session.user.name ?? null} />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -174,7 +179,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
         <Card className="overflow-hidden">
           <Table>
-            <TableHeader className="bg-muted/50">
+            <TableHeader>
               <TableRow>
                 <TableHead>Short Link</TableHead>
                 <TableHead>Original URL</TableHead>

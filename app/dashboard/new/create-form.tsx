@@ -7,6 +7,8 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function CreateLinkForm() {
   const [isPending, startTransition] = useTransition();
@@ -76,7 +78,7 @@ export function CreateLinkForm() {
           type="submit" 
           disabled={isPending}
         >
-          {isPending ? "Creating..." : "Create Link"}
+          {isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating...</> : "Create Link"}
         </Button>
       </div>
     </form>

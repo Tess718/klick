@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateEmail, updatePassword, deleteAccount, updateProfile } from "@/actions/settings";
 import { UserIcon, EnvelopeIcon, LockClosedIcon, TrashIcon, EyeIcon, EyeSlashIcon, CheckIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
+import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,7 +82,7 @@ function ProfileForm({ currentName }: { currentName: string | null }) {
             disabled={loading}
             className="w-fit"
           >
-            {loading ? "Updating..." : "Update Name"}
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Updating...</> : "Update Name"}
           </Button>
         </form>
       </CardContent>
@@ -131,7 +132,7 @@ function EmailForm({ currentEmail }: { currentEmail: string }) {
             disabled={loading}
             className="w-fit"
           >
-            {loading ? "Updating..." : "Update Email"}
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Updating...</> : "Update Email"}
           </Button>
         </form>
       </CardContent>
@@ -216,7 +217,7 @@ function PasswordForm() {
             disabled={loading}
             className="w-fit"
           >
-            {loading ? "Updating..." : "Update Password"}
+            {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Updating...</> : "Update Password"}
           </Button>
         </form>
       </CardContent>
@@ -263,7 +264,7 @@ function DangerZone() {
                 onClick={handleDelete}
                 disabled={loading}
               >
-                {loading ? "Deleting..." : "Yes, Delete Everything"}
+                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting...</> : "Yes, Delete Everything"}
               </Button>
               <Button
                 variant="outline"

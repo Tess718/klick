@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { updateProfile } from "@/actions/settings";
 import { useRouter } from "next/navigation";
@@ -19,7 +26,7 @@ export function OnboardingModal({ isOpen }: { isOpen: boolean }) {
     setLoading(true);
     setError(null);
     const formData = new FormData(e.currentTarget);
-    
+
     const result = await updateProfile(formData);
     if (result.error) {
       setError(result.error);
@@ -37,9 +44,12 @@ export function OnboardingModal({ isOpen }: { isOpen: boolean }) {
             <SparklesIcon className="w-8 h-8 text-pink-eraser" />
           </div>
           <DialogHeader className="relative z-10 text-center items-center">
-            <DialogTitle className="text-2xl font-bold tracking-tight text-paper mb-2">Welcome to Klick!</DialogTitle>
+            <DialogTitle className="text-2xl font-bold tracking-tight text-paper mb-2">
+              Welcome to Klick!
+            </DialogTitle>
             <DialogDescription className="text-paper/80 text-center max-w-[280px]">
-              We've added new personalization features. To continue, what should we call you?
+              We've added new personalization features. To continue, what should
+              we call you?
             </DialogDescription>
           </DialogHeader>
 
@@ -64,13 +74,23 @@ export function OnboardingModal({ isOpen }: { isOpen: boolean }) {
                 className="w-full px-4 py-6 text-lg bg-transparent border-input rounded-xl focus-visible:ring-pink-eraser"
               />
             </div>
-            {error && <p className="text-sm text-destructive font-medium text-center">{error}</p>}
-            <Button 
-              type="submit" 
-              disabled={loading} 
+            {error && (
+              <p className="text-sm text-destructive font-medium text-center">
+                {error}
+              </p>
+            )}
+            <Button
+              type="submit"
+              disabled={loading}
               className="w-full py-6 text-base font-bold bg-pink-eraser hover:bg-pink-eraser/90 text-ink rounded-xl shadow-md transition-all hover:-translate-y-0.5"
             >
-              {loading ? "Saving..." : "Save and Continue"}
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...
+                </>
+              ) : (
+                "Save and Continue"
+              )}
             </Button>
           </form>
         </div>

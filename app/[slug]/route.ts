@@ -27,12 +27,18 @@ export async function GET(
   const parsed = new UAParser(userAgent).getResult();
 
   // Vercel injects geo headers automatically in production
-  const country = request.headers.get("x-vercel-ip-country") ?? null;
-  const city = request.headers.get("x-vercel-ip-city") ?? null;
+  let country = request.headers.get("x-vercel-ip-country") ?? null;
+  let city = request.headers.get("x-vercel-ip-city") ?? null;
 
-  // Fire-and-forget: log the click without blocking the redirect
-  prisma.click
-    .create({
+  // Development fallback so local clicks render on the map on localhost
+  if (process.env.NODE_ENV === "development" && !country) {
+    country = "US";
+    city = "New York";
+  }
+
+  // Log the click reliably before redirecting
+  try {
+    await prisma.click.create({
       data: {
         linkId: link.id,
         country,
@@ -42,10 +48,10 @@ export async function GET(
         os: parsed.os.name ?? null,
         referrer: referrer || null,
       },
-    })
-    .catch(() => {
-      // Click logging failures should never break the redirect
     });
+  } catch (err) {
+    // Click logging failures should never break the redirect
+  }
 
   return NextResponse.redirect(link.originalUrl);
 }

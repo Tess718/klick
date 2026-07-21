@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { signup } from "@/actions/signup";
 import Link from "next/link";
 import { ArrowRightIcon, EyeIcon, EyeSlashIcon, ChartBarSquareIcon } from "@heroicons/react/24/outline";
@@ -133,7 +134,7 @@ export default function SignupPage() {
               disabled={isPending}
               className="w-full flex justify-center items-center gap-2 py-4 px-4 border border-transparent rounded-xl shadow-md text-base font-bold text-ink bg-pink-eraser hover:bg-pink-eraser/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-eraser transition-all disabled:opacity-70 transform hover:-translate-y-0.5"
             >
-              {isPending ? "Creating account..." : "Create new account"}
+              {isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Creating account...</> : "Create new account"}
             </button>
           </div>
 

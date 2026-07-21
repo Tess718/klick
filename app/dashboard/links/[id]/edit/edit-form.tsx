@@ -4,6 +4,7 @@ import { useTransition, useState } from "react";
 import { updateLink } from "@/actions/link-actions";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +72,7 @@ export function EditLinkForm({ link }: { link: { id: string, slug: string, origi
           type="submit" 
           disabled={isPending}
         >
-          {isPending ? "Saving..." : "Save Changes"}
+          {isPending ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...</> : "Save Changes"}
         </Button>
       </div>
     </form>

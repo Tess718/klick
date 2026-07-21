@@ -7,9 +7,11 @@ import { redirect } from "next/navigation";
 
 import { Suspense } from "react";
 
+import { Loader2 } from "lucide-react";
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-zinc-100 text-zinc-500">Loading...</div>}>
+    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-background"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
       <DashboardContent>{children}</DashboardContent>
     </Suspense>
   );
@@ -21,6 +23,8 @@ import { OnboardingModal } from "./onboarding-modal";
 
 import { DashboardHeaderTitle } from "./header-title";
 
+import { prisma } from "@/lib/prisma";
+
 async function DashboardContent({ children }: { children: ReactNode }) {
   const session = await auth();
   
@@ -28,7 +32,12 @@ async function DashboardContent({ children }: { children: ReactNode }) {
     redirect("/login");
   }
 
-  const needsOnboarding = !session.user.name;
+  const dbUser = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { name: true },
+  });
+
+  const needsOnboarding = !dbUser?.name;
 
   return (
     <SidebarProvider>
