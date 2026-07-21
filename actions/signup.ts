@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { signIn } from "@/lib/auth";
 
 const signupSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.string().email("Please enter a valid email address."),
   password: z
     .string()
@@ -18,6 +19,7 @@ const signupSchema = z.object({
 
 export async function signup(formData: FormData) {
   const parsed = signupSchema.safeParse({
+    name: formData.get("name"),
     email: formData.get("email"),
     password: formData.get("password"),
   });
@@ -35,7 +37,7 @@ export async function signup(formData: FormData) {
   const hashed = await bcrypt.hash(parsed.data.password, 10);
 
   await prisma.user.create({
-    data: { email: parsed.data.email, password: hashed },
+    data: { name: parsed.data.name, email: parsed.data.email, password: hashed },
   });
 
   // Automatically log the user in after creation

@@ -3,7 +3,7 @@
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
-import { auth, signOut } from "@/lib/auth";
+import { auth, signOut, unstable_update } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 const emailSchema = z.object({
@@ -21,6 +21,35 @@ const passwordSchema = z.object({
     .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character."),
   confirmPassword: z.string(),
 });
+
+const profileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters."),
+});
+
+export async function updateProfile(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return { error: "Not authenticated." };
+  }
+
+  const parsed = profileSchema.safeParse({
+    name: formData.get("name"),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.errors[0].message };
+  }
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { name: parsed.data.name },
+  });
+
+  await unstable_update({ name: parsed.data.name });
+
+  revalidatePath("/dashboard");
+  return { success: true, message: "Profile updated successfully." };
+}
 
 export async function updateEmail(formData: FormData) {
   const session = await auth();

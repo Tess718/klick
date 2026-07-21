@@ -76,6 +76,19 @@ export default function SignupPage() {
 
           <div>
             <label className="block text-sm font-medium text-ink/70 mb-2">
+              Your name
+            </label>
+            <input
+              name="name"
+              type="text"
+              placeholder="Jane Doe"
+              required
+              className="w-full px-4 py-3 border border-ink/20 rounded-xl bg-transparent focus:outline-none focus:ring-2 focus:ring-pink-eraser focus:border-transparent transition-all placeholder:text-ink/30"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-ink/70 mb-2">
               Your email
             </label>
             <input

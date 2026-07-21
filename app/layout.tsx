@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Montserrat, Geist } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -13,7 +16,7 @@ export const metadata: Metadata = {
     default: "Klick - Modern Link Shortener & Analytics",
   },
   description: "A fast, beautifully designed, and privacy-focused URL shortener with real-time analytics.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")),
   openGraph: {
     title: "Klick - Modern Link Shortener",
     description: "Shorten links and track engagement in real-time with Klick's beautifully designed dashboard.",
@@ -43,6 +46,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { TooltipProvider } from "@/components/ui/tooltip";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,9 +56,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${montserrat.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", montserrat.variable, "font-sans", geist.variable)}
     >
-      <body className=" flex flex-col">{children}</body>
+      <body className=" flex flex-col">
+        <TooltipProvider>{children}</TooltipProvider>
+      </body>
     </html>
   );
 }

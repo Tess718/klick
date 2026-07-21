@@ -8,6 +8,11 @@ import { DeleteLinkButton } from "./delete-link-button";
 import { AutoRefresh } from "./auto-refresh";
 import { RefreshButton } from "./refresh-button";
 import { ArrowTopRightOnSquareIcon, ChartBarIcon, LinkIcon, CursorArrowRaysIcon, CalendarDaysIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+
+import { Greeting } from "./greeting";
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const session = await auth();
@@ -89,62 +94,68 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full pb-10">
       <AutoRefresh />
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-        <div className="flex items-center gap-3">
-          <RefreshButton />
-          <Link
-            href="/dashboard/new"
-            className="bg-zinc-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-zinc-800 transition-colors shadow-sm"
-          >
-            Create Link
-          </Link>
-        </div>
-      </div>
+      <Greeting name={session.user.name ?? null} />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Hero Card */}
-        <div className="md:col-span-1 bg-zinc-900 text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-zinc-400 font-medium mb-2">
-              <CursorArrowRaysIcon className="w-5 h-5" />
-              Total Clicks
-            </div>
-            <div className="text-5xl font-bold tracking-tighter mt-4">{totalClicks.toLocaleString()}</div>
-          </div>
-          <div className="text-sm text-zinc-400 mt-6">Across all your links</div>
-        </div>
+        <Card className="md:col-span-1 bg-primary text-primary-foreground border-none">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2 text-primary-foreground/80">
+              <CursorArrowRaysIcon className="w-5 h-5" /> Total Clicks
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-4xl font-bold tracking-tighter mt-2">{totalClicks.toLocaleString()}</div>
+            <div className="text-sm text-primary-foreground/60 mt-4">Across all your links</div>
+          </CardContent>
+        </Card>
 
         {/* Secondary Stats */}
         <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-zinc-200 flex flex-col justify-between">
-            <div className="flex items-center gap-2 text-zinc-500 font-medium mb-2">
-              <LinkIcon className="w-5 h-5" /> Active Links
-            </div>
-            <div className="text-3xl font-bold">{activeLinks.toLocaleString()}</div>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                <LinkIcon className="w-5 h-5" /> Active Links
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{activeLinks.toLocaleString()}</div>
+            </CardContent>
+          </Card>
           
-          <div className="bg-white p-5 rounded-2xl border border-zinc-200 flex flex-col justify-between">
-            <div className="flex items-center gap-2 text-zinc-500 font-medium mb-2">
-              <GlobeAltIcon className="w-5 h-5" /> Top Country
-            </div>
-            <div className="text-3xl font-bold">{topCountry}</div>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                <GlobeAltIcon className="w-5 h-5" /> Top Country
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{topCountry}</div>
+            </CardContent>
+          </Card>
           
-          <div className="bg-white p-5 rounded-2xl border border-zinc-200 flex flex-col justify-between">
-            <div className="flex items-center gap-2 text-zinc-500 font-medium mb-2">
-              <CalendarDaysIcon className="w-5 h-5" /> Avg Clicks / Link
-            </div>
-            <div className="text-3xl font-bold">{avgClicksPerLink.toLocaleString()}</div>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                <CalendarDaysIcon className="w-5 h-5" /> Avg Clicks / Link
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{avgClicksPerLink.toLocaleString()}</div>
+            </CardContent>
+          </Card>
           
-          <div className="bg-white p-5 rounded-2xl border border-zinc-200 flex flex-col justify-between">
-            <div className="flex items-center gap-2 text-zinc-500 font-medium mb-2">
-              <CursorArrowRaysIcon className="w-5 h-5" /> Clicks Today
-            </div>
-            <div className="text-3xl font-bold">{clicksToday.toLocaleString()}</div>
-          </div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                <CursorArrowRaysIcon className="w-5 h-5" /> Clicks Today
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{clicksToday.toLocaleString()}</div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
@@ -152,76 +163,72 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       <div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-4">
           <h2 className="text-xl font-bold tracking-tight">Your Links</h2>
-          <DashboardSearch />
-        </div>
-
-        <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm whitespace-nowrap">
-              <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Short Link</th>
-                  <th className="px-6 py-4 font-medium">Original URL</th>
-                  <th className="px-6 py-4 font-medium">Clicks</th>
-                  <th className="px-6 py-4 font-medium">Created</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100">
-                {links.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-zinc-500">
-                      No links found. {q ? "Try a different search term." : "Create your first short link above."}
-                    </td>
-                  </tr>
-                ) : (
-                  links.map((link: any) => {
-                    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "localhost:3000";
-                    const shortUrl = `${baseUrl}/${link.slug}`;
-                    return (
-                      <tr key={link.id} className="hover:bg-zinc-50:bg-zinc-800/30 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-zinc-900">{link.slug}</span>
-                            <CopyButton text={shortUrl} />
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-zinc-500">
-                          <div className="flex items-center gap-1 max-w-[200px] sm:max-w-[300px]">
-                            <span className="truncate">{link.originalUrl}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-zinc-600">
-                          {link._count.clicks.toLocaleString()}
-                        </td>
-                        <td className="px-6 py-4 text-zinc-500">
-                          {new Date(link.createdAt).toLocaleDateString()}
-                        </td>
-                        <td className="px-6 py-4 text-right">
-                          <Link
-                            href={`/dashboard/links/${link.id}`}
-                            className="inline-flex items-center justify-center p-2 text-zinc-400 hover:text-zinc-900:text-zinc-100 hover:bg-zinc-100:bg-zinc-800 rounded-md transition-colors"
-                            title="View analytics"
-                          >
-                            <ChartBarIcon className="w-4 h-4" />
-                          </Link>
-                          <Link
-                            href={`/dashboard/links/${link.id}/edit`}
-                            className="inline-flex items-center justify-center p-2 text-zinc-400 hover:text-blue-500 hover:bg-blue-50:bg-blue-950/30 rounded-md transition-colors"
-                            title="Edit link"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                          </Link>
-                          <DeleteLinkButton id={link.id} />
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <DashboardSearch />
+            <RefreshButton />
+            <Button render={<Link href="/dashboard/new" />}>
+              Create Link
+            </Button>
           </div>
         </div>
+
+        <Card className="overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/50">
+              <TableRow>
+                <TableHead>Short Link</TableHead>
+                <TableHead>Original URL</TableHead>
+                <TableHead>Clicks</TableHead>
+                <TableHead>Created</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {links.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                    No links found. {q ? "Try a different search term." : "Create your first short link above."}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                links.map((link: any) => {
+                  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "localhost:3000";
+                  const shortUrl = `${baseUrl}/${link.slug}`;
+                  return (
+                    <TableRow key={link.id}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          <span>{link.slug}</span>
+                          <CopyButton text={shortUrl} />
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        <div className="max-w-[200px] sm:max-w-[300px] truncate">
+                          {link.originalUrl}
+                        </div>
+                      </TableCell>
+                      <TableCell>{link._count.clicks.toLocaleString()}</TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(link.createdAt).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2 items-center">
+                          <Button variant="ghost" size="icon" render={<Link href={`/dashboard/links/${link.id}`} />}>
+                            <ChartBarIcon className="w-4 h-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon" render={<Link href={`/dashboard/links/${link.id}/edit`} />}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                          </Button>
+                          <DeleteLinkButton id={link.id} />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </Card>
       </div>
     </div>
   );

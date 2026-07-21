@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --background: var(--color-paper);
+  --foreground: var(--color-ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-montserrat);
+
+  /* The New Palette */
+  --color-ink: #282828;
+  --color-paper: #F9F6EF;
+  --color-cobalt: #193497;
+  --color-pink-eraser: #EDA398;
+
+  /* Remap standard tailwind colors to use the new palette */
+  --color-white: #F9F6EF;
+  --color-zinc-50: #F9F6EF;
+  --color-zinc-100: #F9F6EF;
+  --color-zinc-200: #e2dac9;
+  --color-zinc-300: #EDA398;
+  --color-zinc-400: #888888;
+  --color-zinc-500: #666666;
+  --color-zinc-600: #193497;
+  --color-zinc-700: #334b99;
+  --color-zinc-800: #252836;
+  --color-zinc-900: #282828;
+  --color-zinc-950: #1d1d1d;
+  
+  --color-blue-500: #193497;
+  --color-blue-600: #12256c;
+  --color-violet-500: #EDA398;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
