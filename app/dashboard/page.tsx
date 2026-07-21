@@ -41,7 +41,15 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     },
     take: 1,
   });
-  const topCountry = topCountryData.length > 0 ? topCountryData[0].country : "N/A";
+  let topCountry = topCountryData.length > 0 && topCountryData[0].country ? topCountryData[0].country : "N/A";
+  if (topCountry !== "N/A") {
+    try {
+      const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+      topCountry = regionNames.of(topCountry) || topCountry;
+    } catch (e) {
+      // Fallback to the raw code if Intl fails
+    }
+  }
 
   // Clicks today
   const today = new Date();
