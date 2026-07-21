@@ -8,25 +8,9 @@ import {
   Marker
 } from "react-simple-maps";
 import { scaleLinear } from "d3-scale";
+import { countryCoordinates } from "@/lib/country-coordinates";
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
-
-// Approximate coordinates for countries (using 2-letter codes or names).
-// In a real app, you'd map the country names returned by Vercel/analytics to exact lat/lng.
-// For this demo, let's use a small dictionary or just fallback to generic markers.
-const countryCoordinates: Record<string, [number, number]> = {
-  US: [-95.7129, 37.0902],
-  GB: [-3.4359, 55.3781],
-  FR: [2.2137, 46.2276],
-  DE: [10.4515, 51.1657],
-  IN: [78.9629, 20.5937],
-  CA: [-106.3468, 56.1304],
-  AU: [133.7751, -25.2744],
-  BR: [-51.9253, -14.235],
-  JP: [138.2529, 36.2048],
-  CN: [104.1954, 35.8617],
-  // Add more as needed or use a robust geocoding lookup
-};
 
 type CountryData = {
   country: string | null;
@@ -74,8 +58,15 @@ export function WorldMapChart({ data }: { data: CountryData[] }) {
           const coords = countryCoordinates[country];
           if (!coords) return null;
 
+          let fullName = country;
+          try {
+            const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+            fullName = regionNames.of(country) || country;
+          } catch (e) {}
+
           return (
             <Marker key={country} coordinates={coords}>
+              <title>{fullName}: {_count} click{_count === 1 ? '' : 's'}</title>
               <circle
                 r={sizeScale(_count)}
                 fill="#193497" // COBALT
