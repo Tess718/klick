@@ -372,6 +372,106 @@ export function LandingFeatures() {
           </div>
         </div>
       </motion.div>
+
+      {/* Feature 5: QR Codes & Easy Sharing */}
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeUp}
+        className="flex flex-col md:flex-row items-center gap-12 lg:gap-32 text-left"
+      >
+        <div className="flex-1">
+          <div className="p-3 bg-pink-eraser/20 text-pink-eraser rounded-xl inline-block mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+            </svg>
+          </div>
+          <h2 className="text-3xl font-bold mb-4 tracking-tight">QR Codes & Smart Sharing</h2>
+          <p className="text-lg text-ink/70 leading-relaxed">
+            Every link you shorten instantly generates a high-quality QR code. Perfect for menus, business cards, physical marketing materials, or cross-platform sharing with one simple tap.
+          </p>
+        </div>
+        <div className="flex-1 w-full relative flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-tr from-cobalt/20 to-pink-eraser/20 rounded-[3rem] blur-2xl opacity-60 transform scale-90" />
+          
+          <div className="w-full bg-paper p-8 rounded-3xl shadow-2xl shadow-ink/5 border border-ink/10 z-10 flex flex-col md:flex-row items-center gap-8">
+            {/* Premium Mock QR Code */}
+            <div className="w-48 h-48 bg-white p-4 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-ink/10 flex-shrink-0 flex items-center justify-center relative overflow-hidden group">
+              
+              {/* QR Grid generated deterministically */}
+              <svg viewBox="0 0 210 210" className="w-full h-full opacity-90 relative z-0">
+                {/* Position Markers */}
+                <path d="M0 0h70v70H0z m10 10v50h50V10H10z m15 15h20v20h-20z" fill="#282828" />
+                <path d="M140 0h70v70h-70z m10 10v50h50V10h-50z m15 15h20v20h-20z" fill="#282828" />
+                <path d="M0 140h70v70H0z m10 10v50h50V150H10z m15 15h20v20h-20z" fill="#282828" />
+                
+                {/* Random Data Blocks (Deterministic for SSR) */}
+                {Array.from({ length: 21 }).map((_, y) => 
+                  Array.from({ length: 21 }).map((_, x) => {
+                    const isCorner = (x < 7 && y < 7) || (x > 13 && y < 7) || (x < 7 && y > 13);
+                    const isCenter = x >= 8 && x <= 12 && y >= 8 && y <= 12;
+                    const isFilled = (Math.sin(x * 12.9898 + y * 78.233) * 43758.5453) % 1 > 0.45;
+                    
+                    if (isCorner || isCenter || !isFilled) return null;
+                    return <rect key={`${x}-${y}`} x={x * 10} y={y * 10} width="10" height="10" rx="3" fill="#282828" />;
+                  })
+                )}
+              </svg>
+
+              {/* Center Logo */}
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-zinc-100 flex items-center justify-center p-2">
+                  <div className="w-full h-full bg-cobalt rounded-lg flex items-center justify-center text-white font-bold text-xl italic tracking-tighter">
+                    k.
+                  </div>
+                </div>
+              </div>
+
+              {/* Glossy Scanning Laser animation */}
+              <motion.div 
+                animate={{ top: ["-10%", "110%", "-10%"] }}
+                transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
+                className="absolute left-0 right-0 h-24 bg-gradient-to-b from-transparent via-lime-400/20 to-lime-400/80 border-b-2 border-lime-400 shadow-[0_5px_20px_#A3E635] z-20"
+                style={{ backdropFilter: "blur(2px)" }}
+              />
+            </div>
+
+            {/* Sharing Platform Visualization */}
+            <div className="flex flex-col flex-1 w-full gap-4">
+              <div className="text-xs font-bold text-ink/50 uppercase tracking-wider mb-2">Share Across Platforms</div>
+              
+              {[
+                { name: "Twitter", color: "bg-[#1DA1F2]/10 text-[#1DA1F2]" },
+                { name: "LinkedIn", color: "bg-[#0A66C2]/10 text-[#0A66C2]" },
+                { name: "Email Campaign", color: "bg-cobalt/10 text-cobalt" }
+              ].map((platform, i) => (
+                <motion.div 
+                  key={platform.name}
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 + (i * 0.1) }}
+                  className="flex items-center justify-between p-3 bg-white border border-ink/5 rounded-xl hover:bg-zinc-50 transition-colors"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs ${platform.color}`}>
+                      {platform.name[0]}
+                    </div>
+                    <span className="text-sm font-semibold text-ink">{platform.name}</span>
+                  </div>
+                  <div className="w-6 h-6 rounded-full bg-ink/5 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3 text-ink/40">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </>
   );
 }
