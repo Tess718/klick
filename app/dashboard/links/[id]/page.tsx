@@ -26,7 +26,8 @@ export default async function LinkAnalyticsPage({ params }: { params: Promise<{ 
   }
 
   const analytics = await getLinkAnalytics(id);
-  const shortUrl = `klick.vercel.app/${link.slug}`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "localhost:3000";
+  const shortUrl = `${baseUrl}/${link.slug}`;
 
   return (
     <div className="max-w-6xl mx-auto w-full pb-10">

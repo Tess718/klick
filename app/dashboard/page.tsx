@@ -1,4 +1,4 @@
-﻿import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -168,7 +168,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                   </tr>
                 ) : (
                   links.map((link: any) => {
-                    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || "localhost:3000";
+                    const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "localhost:3000";
                     const shortUrl = `${baseUrl}/${link.slug}`;
                     return (
                       <tr key={link.id} className="hover:bg-zinc-50:bg-zinc-800/30 transition-colors">
