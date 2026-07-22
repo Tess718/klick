@@ -4,6 +4,7 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { auth, signOut, unstable_update } from "@/lib/auth";
+import { settingsRatelimit, checkRateLimit, getClientIp } from "@/lib/redis";
 import { revalidatePath } from "next/cache";
 
 const emailSchema = z.object({
@@ -26,10 +27,20 @@ const profileSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
 });
 
+const deleteAccountSchema = z.object({
+  password: z.string().min(1, "Password is required to confirm account deletion."),
+});
+
 export async function updateProfile(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {
     return { error: "Not authenticated." };
+  }
+
+  const ip = await getClientIp();
+  const { success } = await checkRateLimit(settingsRatelimit, session.user.id ?? ip);
+  if (!success) {
+    return { error: "Too many settings updates. Please try again in a minute." };
   }
 
   const parsed = profileSchema.safeParse({
@@ -55,6 +66,12 @@ export async function updateEmail(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {
     return { error: "Not authenticated." };
+  }
+
+  const ip = await getClientIp();
+  const { success } = await checkRateLimit(settingsRatelimit, session.user.id ?? ip);
+  if (!success) {
+    return { error: "Too many settings updates. Please try again in a minute." };
   }
 
   const parsed = emailSchema.safeParse({
@@ -86,6 +103,12 @@ export async function updatePassword(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {
     return { error: "Not authenticated." };
+  }
+
+  const ip = await getClientIp();
+  const { success } = await checkRateLimit(settingsRatelimit, session.user.id ?? ip);
+  if (!success) {
+    return { error: "Too many settings updates. Please try again in a minute." };
   }
 
   const parsed = passwordSchema.safeParse({
@@ -125,13 +148,40 @@ export async function updatePassword(formData: FormData) {
   return { success: true, message: "Password updated successfully." };
 }
 
-export async function deleteAccount() {
+export async function deleteAccount(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) {
     return { error: "Not authenticated." };
   }
 
-  // Cascade delete handles links and clicks
+  const ip = await getClientIp();
+  const { success } = await checkRateLimit(settingsRatelimit, session.user.id ?? ip);
+  if (!success) {
+    return { error: "Too many attempts. Please try again in a minute." };
+  }
+
+  const parsed = deleteAccountSchema.safeParse({
+    password: formData.get("password"),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.errors[0].message };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
+
+  if (!user || !user.password) {
+    return { error: "User not found or password unavailable." };
+  }
+
+  const valid = await bcrypt.compare(parsed.data.password, user.password);
+  if (!valid) {
+    return { error: "Incorrect password. Account deletion canceled." };
+  }
+
+  // Cascade delete handles user's links and click data
   await prisma.user.delete({
     where: { id: session.user.id },
   });

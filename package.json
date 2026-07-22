@@ -29,6 +29,7 @@
     "nanoid": "^5.0.9",
     "next": "^16.0.0",
     "next-auth": "5.0.0-beta.25",
+    "obscenity": "^0.4.6",
     "qrcode": "^1.5.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

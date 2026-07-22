@@ -4,6 +4,8 @@ import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { signIn } from "@/lib/auth";
+import { AuthError } from "next-auth";
+import { signupRatelimit, checkRateLimit, getClientIp } from "@/lib/redis";
 
 const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -18,6 +20,12 @@ const signupSchema = z.object({
 });
 
 export async function signup(formData: FormData) {
+  const ip = await getClientIp();
+  const { success } = await checkRateLimit(signupRatelimit, ip);
+  if (!success) {
+    return { error: "Too many signup attempts. Please try again in a minute." };
+  }
+
   const parsed = signupSchema.safeParse({
     name: formData.get("name"),
     email: formData.get("email"),
@@ -41,9 +49,17 @@ export async function signup(formData: FormData) {
   });
 
   // Automatically log the user in after creation
-  await signIn("credentials", {
-    email: parsed.data.email,
-    password: parsed.data.password,
-    redirectTo: "/dashboard",
-  });
+  try {
+    await signIn("credentials", {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      redirectTo: "/dashboard",
+    });
+  } catch (err) {
+    if (err instanceof AuthError) {
+      return { error: "Account created successfully, but automatic login failed. Please log in." };
+    }
+    // Auth.js throws a redirect internally on success - rethrow so it works
+    throw err;
+  }
 }

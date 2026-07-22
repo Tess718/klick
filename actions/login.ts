@@ -2,8 +2,15 @@
 
 import { signIn } from "@/lib/auth";
 import { AuthError } from "next-auth";
+import { loginRatelimit, checkRateLimit, getClientIp } from "@/lib/redis";
 
 export async function login(formData: FormData) {
+  const ip = await getClientIp();
+  const { success } = await checkRateLimit(loginRatelimit, ip);
+  if (!success) {
+    return { error: "Too many login attempts. Please try again in a minute." };
+  }
+
   try {
     await signIn("credentials", {
       email: formData.get("email"),

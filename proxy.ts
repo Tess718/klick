@@ -4,7 +4,8 @@ import { NextResponse } from "next/server";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+// Next.js 16 proxy convention export
+export const proxy = auth((req) => {
   const isLoggedIn = !!req.auth;
   const isDashboardRoute = req.nextUrl.pathname.startsWith("/dashboard");
   const isAuthRoute = req.nextUrl.pathname === "/login" || req.nextUrl.pathname === "/signup";
@@ -17,9 +18,11 @@ export default auth((req) => {
   if ((isAuthRoute || isLandingRoute) && isLoggedIn) {
     return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
   }
-  
+
   return NextResponse.next();
 });
+
+export default proxy;
 
 export const config = {
   // Matches all routes except next internals, static files, and api routes

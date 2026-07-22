@@ -228,10 +228,18 @@ function PasswordForm() {
 function DangerZone() {
   const [confirming, setConfirming] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<{ error?: string }>({});
 
-  async function handleDelete() {
+  async function handleDelete(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setLoading(true);
-    await deleteAccount();
+    setStatus({});
+    const formData = new FormData(e.currentTarget);
+    const res = await deleteAccount(formData);
+    setLoading(false);
+    if (res?.error) {
+      setStatus({ error: res.error });
+    }
   }
 
   return (
@@ -254,26 +262,38 @@ function DangerZone() {
             Delete Account
           </Button>
         ) : (
-          <div className="flex flex-col gap-4">
+          <form onSubmit={handleDelete} className="flex flex-col gap-4">
             <p className="text-sm font-medium text-destructive">
-              This will permanently delete your account, all your links, and all analytics data. This action cannot be undone.
+              This will permanently delete your account, all your links, and all analytics data. Please enter your password to confirm.
             </p>
+            <Input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+              className="max-w-md"
+            />
+            <StatusMessage {...status} />
             <div className="flex items-center gap-3">
               <Button
+                type="submit"
                 variant="destructive"
-                onClick={handleDelete}
                 disabled={loading}
               >
-                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting...</> : "Yes, Delete Everything"}
+                {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Deleting...</> : "Confirm & Delete Account"}
               </Button>
               <Button
+                type="button"
                 variant="outline"
-                onClick={() => setConfirming(false)}
+                onClick={() => {
+                  setConfirming(false);
+                  setStatus({});
+                }}
               >
                 Cancel
               </Button>
             </div>
-          </div>
+          </form>
         )}
       </CardContent>
     </Card>

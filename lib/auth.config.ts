@@ -10,15 +10,19 @@ export const authConfig = {
         token.name = user.name;
       }
       if (trigger === "update") {
-        if (session?.user?.name) token.name = session.user.name;
-        if (session?.name) token.name = session.name;
+        if (session?.user?.name !== undefined) token.name = session.user.name;
+        if (session?.name !== undefined) token.name = session.name;
       }
       return token;
     },
     session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-        session.user.name = token.name as string | null | undefined;
+      if (session.user) {
+        if (token.id || token.sub) {
+          session.user.id = (token.id as string) || (token.sub as string);
+        }
+        if (token.name !== undefined) {
+          session.user.name = token.name as string | null | undefined;
+        }
       }
       return session;
     },

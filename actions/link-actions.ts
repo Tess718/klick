@@ -23,7 +23,7 @@ export async function deleteLink(id: string) {
     where: { id },
   });
 
-  await redis.del(`${LINK_CACHE_PREFIX}${link.slug}`);
+  await redis?.del(`${LINK_CACHE_PREFIX}${link.slug}`);
   revalidatePath("/dashboard");
 
   return { success: true };
@@ -51,7 +51,7 @@ export async function updateLink(id: string, data: { originalUrl?: string; expir
     },
   });
 
-  await redis.del(`${LINK_CACHE_PREFIX}${link.slug}`);
+  await redis?.del(`${LINK_CACHE_PREFIX}${link.slug}`);
   revalidatePath("/dashboard");
   revalidatePath(`/dashboard/links/${id}`);
 

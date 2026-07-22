@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { ChartBarIcon, GlobeAltIcon, ClockIcon, BoltIcon } from "@heroicons/react/24/outline";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function LandingFeatures() {
   const fadeUp = {
@@ -268,16 +269,7 @@ export function LandingFeatures() {
               </div>
             </div>
 
-            <div className="flex gap-3 justify-center pt-2">
-              <div className="flex flex-col items-center p-3 bg-pink-eraser/10 rounded-xl w-16 border border-pink-eraser/20">
-                <span className="text-2xl font-bold text-pink-eraser">12</span>
-                <span className="text-[10px] text-pink-eraser/70 font-bold uppercase mt-1">Hrs</span>
-              </div>
-              <div className="flex flex-col items-center p-3 bg-cobalt/10 rounded-xl w-16 border border-cobalt/20">
-                <span className="text-2xl font-bold text-cobalt">44</span>
-                <span className="text-[10px] text-cobalt/70 font-bold uppercase mt-1">Mins</span>
-              </div>
-            </div>
+            <ExpirationCountdown />
           </div>
         </div>
       </motion.div>
@@ -473,5 +465,62 @@ export function LandingFeatures() {
         </div>
       </motion.div>
     </>
+  );
+}
+
+function ExpirationCountdown() {
+  const [seconds, setSeconds] = useState(10);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSeconds((prev) => (prev > 0 ? prev - 1 : 10));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="flex flex-col gap-3 pt-2">
+      <div className="flex gap-3 justify-center items-center">
+        <div className="flex flex-col items-center p-3 bg-pink-eraser/10 rounded-xl w-20 border border-pink-eraser/20">
+          <span className="text-2xl font-bold text-pink-eraser">12</span>
+          <span className="text-[10px] text-pink-eraser/70 font-bold uppercase mt-1">Hrs</span>
+        </div>
+        <div className="flex flex-col items-center p-3 bg-cobalt/10 rounded-xl w-20 border border-cobalt/20">
+          <span className="text-2xl font-bold text-cobalt">44</span>
+          <span className="text-[10px] text-cobalt/70 font-bold uppercase mt-1">Mins</span>
+        </div>
+        <div className="flex flex-col items-center p-3 bg-amber-500/10 rounded-xl w-20 border border-amber-500/30 relative overflow-hidden shadow-sm">
+          <motion.div
+            animate={{ opacity: [0.3, 1, 0.3], scale: [1, 1.25, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-amber-500"
+          />
+          <div className="h-8 flex items-center justify-center">
+            <AnimatePresence mode="popLayout">
+              <motion.span
+                key={seconds}
+                initial={{ y: -10, opacity: 0, scale: 0.85 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                exit={{ y: 10, opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="text-2xl font-bold text-amber-600 font-mono tracking-tight"
+              >
+                {seconds.toString().padStart(2, "0")}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+          <span className="text-[10px] text-amber-600/70 font-bold uppercase mt-1">Secs</span>
+        </div>
+      </div>
+
+      {/* Dynamic Animated Progress Bar */}
+      <div className="w-full bg-ink/5 rounded-full h-1.5 overflow-hidden">
+        <motion.div
+          className="h-full bg-gradient-to-r from-cobalt via-pink-eraser to-amber-500 rounded-full"
+          animate={{ width: `${(seconds / 10) * 100}%` }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+        />
+      </div>
+    </div>
   );
 }
