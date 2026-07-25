@@ -37,16 +37,32 @@ function UserEmailSkeleton() {
   return <div className="h-3 w-28 bg-sidebar-foreground/20 rounded animate-pulse" />;
 }
 
+function SidebarSkeleton() {
+  return (
+    <div className="w-[16rem] hidden md:flex h-svh flex-col bg-sidebar border-r border-sidebar-border p-4 shrink-0">
+      <div className="h-6 w-24 bg-sidebar-accent rounded animate-pulse mb-8" />
+      <div className="space-y-3 flex-1">
+        <div className="h-8 w-full bg-sidebar-accent rounded animate-pulse" />
+        <div className="h-8 w-full bg-sidebar-accent rounded animate-pulse" />
+        <div className="h-8 w-full bg-sidebar-accent rounded animate-pulse" />
+      </div>
+      <div className="h-4 w-32 bg-sidebar-accent rounded animate-pulse mb-2" />
+    </div>
+  );
+}
+
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
-      <AppSidebar
-        userEmail={
-          <Suspense fallback={<UserEmailSkeleton />}>
-            <UserEmailFooter />
-          </Suspense>
-        }
-      />
+      <Suspense fallback={<SidebarSkeleton />}>
+        <AppSidebar
+          userEmail={
+            <Suspense fallback={<UserEmailSkeleton />}>
+              <UserEmailFooter />
+            </Suspense>
+          }
+        />
+      </Suspense>
       <SidebarInset>
         {/* Mobile Header */}
         <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border/50 px-4">
