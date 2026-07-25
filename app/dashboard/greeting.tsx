@@ -56,28 +56,28 @@ export function Greeting({ name }: { name: string | null }) {
           {greeting}, {name}
           
           {/* Mobile icon (inline) */}
-          <div className="w-12 h-12 rounded-full bg-paper/10 flex items-center justify-center shrink-0 sm:hidden">
-            <div className="w-8 h-8 brightness-0 invert flex items-center justify-center">
-              <DotLottieReact
-                src="https://lottie.host/a5064009-cdff-47de-a1be-e137161750f6/fINwph9Urh.lottie"
-                loop
-                autoplay
-              />
-            </div>
+          <div className="w-12 h-12 rounded-full bg-paper/10 flex items-center justify-center shrink-0 sm:hidden overflow-hidden">
+            <DotLottieReact
+              src="/hello.lottie.lottie"
+              loop
+              autoplay
+              className="brightness-0 invert"
+              style={{ width: "40px", height: "40px" }}
+            />
           </div>
         </h2>
         <p className="text-paper/80 mt-1">Here's what's happening with your links today.</p>
       </div>
 
       {/* Desktop icon (right-aligned) */}
-      <div className="relative z-10 hidden sm:flex w-16 h-16 rounded-full bg-paper/10 items-center justify-center shrink-0">
-        <div className="w-10 h-10 brightness-0 invert flex items-center justify-center">
-          <DotLottieReact
-            src="https://lottie.host/a5064009-cdff-47de-a1be-e137161750f6/fINwph9Urh.lottie"
-            loop
-            autoplay
-          />
-        </div>
+      <div className="relative z-10 hidden sm:flex w-16 h-16 rounded-full bg-paper/10 items-center justify-center shrink-0 overflow-hidden">
+        <DotLottieReact
+          src="/hello.lottie.lottie"
+          loop
+          autoplay
+          className="brightness-0 invert"
+          style={{ width: "48px", height: "48px" }}
+        />
       </div>
       
       {/* Subtle background glow effect */}

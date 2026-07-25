@@ -16,7 +16,7 @@ export function LandingHero() {
         initial="hidden"
         animate="visible"
         variants={fadeUp}
-        className="text-6xl md:text-[5.5rem] font-bold tracking-tighter mb-6 max-w-4xl text-cobalt leading-[1.1]"
+        className="text-3xl sm:text-5xl md:text-[5.5rem] font-bold tracking-tighter mb-6 max-w-4xl text-cobalt leading-[1.15] md:leading-[1.1]"
       >
         Short links. Deep analytics.
       </motion.h1>

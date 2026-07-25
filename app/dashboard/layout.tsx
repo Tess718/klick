@@ -1,47 +1,44 @@
-import { ReactNode } from "react";
-import Link from "next/link";
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
-import { auth, signOut } from "@/lib/auth";
-import { Logo } from "@/components/logo";
-import { redirect } from "next/navigation";
-
-import { Suspense } from "react";
-
-import { Loader2 } from "lucide-react";
-
-export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-background"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
-      <DashboardContent>{children}</DashboardContent>
-    </Suspense>
-  );
-}
-
+import { ReactNode, Suspense, cache } from "react";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
 import { OnboardingModal } from "./onboarding-modal";
-
 import { DashboardHeaderTitle } from "./header-title";
 
-import { prisma } from "@/lib/prisma";
-
-async function DashboardContent({ children }: { children: ReactNode }) {
+const getDashboardUserData = cache(async () => {
   const session = await auth();
-  
-  if (!session?.user) {
-    redirect("/login");
-  }
+  if (!session?.user?.id) return null;
 
   const dbUser = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: { name: true },
   });
 
-  const needsOnboarding = !dbUser?.name;
+  return {
+    email: session.user.email ?? "",
+    needsOnboarding: !dbUser?.name,
+  };
+});
 
+async function SidebarWrapper() {
+  const userData = await getDashboardUserData();
+  return <AppSidebar email={userData?.email ?? ""} />;
+}
+
+async function OnboardingCheck() {
+  const userData = await getDashboardUserData();
+  if (!userData) return null;
+
+  return <OnboardingModal isOpen={userData.needsOnboarding} />;
+}
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
-      <AppSidebar email={session.user.email ?? ""} />
+      <Suspense fallback={<AppSidebar email="" />}>
+        <SidebarWrapper />
+      </Suspense>
       <SidebarInset>
         {/* Mobile Header */}
         <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border/50 px-4">
@@ -55,7 +52,12 @@ async function DashboardContent({ children }: { children: ReactNode }) {
           {children}
         </div>
       </SidebarInset>
-      <OnboardingModal isOpen={needsOnboarding} />
+      <Suspense fallback={null}>
+        <OnboardingCheck />
+      </Suspense>
     </SidebarProvider>
   );
 }
+
+
+

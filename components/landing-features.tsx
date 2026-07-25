@@ -24,7 +24,7 @@ export function LandingFeatures() {
           <div className="p-3 bg-cobalt/10 text-cobalt rounded-xl inline-block mb-4">
             <GlobeAltIcon className="w-6 h-6" />
           </div>
-          <h2 className="text-3xl font-bold mb-4 tracking-tight">Global Tracking</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 tracking-tight">Global Tracking</h2>
           <p className="text-lg text-ink/70 leading-relaxed">
             See exactly where your clicks are coming from on an interactive world map. 
             Track real-time data from every continent and optimize your campaigns based on true geographic reach.
@@ -99,7 +99,7 @@ export function LandingFeatures() {
           <div className="p-3 bg-pink-eraser/20 text-pink-eraser rounded-xl inline-block mb-4">
             <ChartBarIcon className="w-6 h-6" />
           </div>
-          <h2 className="text-3xl font-bold mb-4 tracking-tight">Device Analytics</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 tracking-tight">Device Analytics</h2>
           <p className="text-lg text-ink/70 leading-relaxed">
             Get a detailed breakdown of the devices, browsers, and operating systems your audience uses.
             Ensure your content is optimized for the platforms your users actually prefer.
@@ -235,7 +235,7 @@ export function LandingFeatures() {
           <div className="p-3 bg-ink/10 text-ink rounded-xl inline-block mb-4">
             <ClockIcon className="w-6 h-6" />
           </div>
-          <h2 className="text-3xl font-bold mb-4 tracking-tight">Link Expiration</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 tracking-tight">Link Expiration</h2>
           <p className="text-lg text-ink/70 leading-relaxed">
             Set custom expiration dates so your links automatically expire when a campaign ends. 
             Perfect for limited-time offers, flash sales, and tight marketing schedules.
@@ -286,7 +286,7 @@ export function LandingFeatures() {
           <div className="p-3 bg-cobalt/10 text-cobalt rounded-xl inline-block mb-4">
             <BoltIcon className="w-6 h-6" />
           </div>
-          <h2 className="text-3xl font-bold mb-4 tracking-tight">Edge Caching</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 tracking-tight">Edge Caching</h2>
           <p className="text-lg text-ink/70 leading-relaxed">
             Sub-millisecond resolution with our global edge network. 
             Your short links load instantly across the globe, ensuring you never lose a click to high latency.
@@ -380,7 +380,7 @@ export function LandingFeatures() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
             </svg>
           </div>
-          <h2 className="text-3xl font-bold mb-4 tracking-tight">QR Codes & Smart Sharing</h2>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 tracking-tight">QR Codes & Smart Sharing</h2>
           <p className="text-lg text-ink/70 leading-relaxed">
             Every link you shorten instantly generates a high-quality QR code. Perfect for menus, business cards, physical marketing materials, or cross-platform sharing with one simple tap.
           </p>

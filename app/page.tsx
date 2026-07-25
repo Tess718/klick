@@ -46,7 +46,7 @@ export default function Home() {
           
           {/* Section Header */}
           <div className="text-center max-w-2xl mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-ink mb-6">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-ink mb-6">
               Everything you need to track, route, and scale.
             </h2>
             <p className="text-lg text-ink/70">
@@ -62,7 +62,7 @@ export default function Home() {
 
         {/* How It Works */}
         <div className="mt-24 md:mt-24 max-w-[1400px] w-full px-6 md:px-12 lg:px-16">
-          <h2 className="text-4xl font-bold mb-16 text-center tracking-tight">How it works</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-16 text-center tracking-tight">How it works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
             <LandingHowItWorks />
           </div>
@@ -70,7 +70,7 @@ export default function Home() {
 
         {/* FAQ Section */}
         <div className="mt-24 md:mt-24 max-w-3xl w-full text-left px-6 md:px-12">
-          <h2 className="text-4xl font-bold mb-12 text-center tracking-tight">Frequently Asked Questions</h2>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-12 text-center tracking-tight">Frequently Asked Questions</h2>
           <div className="flex flex-col gap-2">
             <FAQItem 
               question="Is Klick really free?" 
@@ -93,7 +93,7 @@ export default function Home() {
 
         {/* Final CTA */}
         <div className="mt-24 md:mt-32 mb-20 text-center px-6 md:px-12">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-8 tracking-tight">
             Ready to start tracking?
           </h2>
           <Link
