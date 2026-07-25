@@ -199,12 +199,23 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
                 links.map((link: any) => {
                   const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "localhost:3000";
                   const shortUrl = `${baseUrl}/${link.slug}`;
+                  const isExpired = link.expiresAt && new Date(link.expiresAt) < new Date();
                   return (
                     <TableRow key={link.id}>
                       <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span>{link.slug}</span>
                           <CopyButton text={shortUrl} />
+                          {isExpired && (
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
+                              Expired
+                            </span>
+                          )}
+                          {link.flaggedUnsafe && (
+                            <span className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                              Unsafe
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="text-muted-foreground">

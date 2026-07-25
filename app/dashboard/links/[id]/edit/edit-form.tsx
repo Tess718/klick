@@ -60,6 +60,7 @@ export function EditLinkForm({ link }: { link: { id: string, slug: string, origi
         <Input 
           type="datetime-local" 
           name="expiresAt"
+          min={new Date().toISOString().slice(0, 16)}
           defaultValue={link.expiresAt ? new Date(link.expiresAt).toISOString().slice(0, 16) : ""} 
         />
       </div>

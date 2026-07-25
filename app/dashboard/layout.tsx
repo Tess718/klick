@@ -21,9 +21,9 @@ const getDashboardUserData = cache(async () => {
   };
 });
 
-async function SidebarWrapper() {
+async function UserEmailFooter() {
   const userData = await getDashboardUserData();
-  return <AppSidebar email={userData?.email ?? ""} />;
+  return <span>{userData?.email ?? ""}</span>;
 }
 
 async function OnboardingCheck() {
@@ -33,26 +33,20 @@ async function OnboardingCheck() {
   return <OnboardingModal isOpen={userData.needsOnboarding} />;
 }
 
-function SidebarSkeleton() {
-  return (
-    <div className="w-[16rem] hidden md:flex h-svh flex-col bg-sidebar border-r border-sidebar-border p-4 shrink-0">
-      <div className="h-6 w-24 bg-sidebar-accent rounded animate-pulse mb-8" />
-      <div className="space-y-3 flex-1">
-        <div className="h-8 w-full bg-sidebar-accent rounded animate-pulse" />
-        <div className="h-8 w-full bg-sidebar-accent rounded animate-pulse" />
-        <div className="h-8 w-full bg-sidebar-accent rounded animate-pulse" />
-      </div>
-      <div className="h-4 w-32 bg-sidebar-accent rounded animate-pulse mb-2" />
-    </div>
-  );
+function UserEmailSkeleton() {
+  return <div className="h-3 w-28 bg-sidebar-foreground/20 rounded animate-pulse" />;
 }
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
-      <Suspense fallback={<SidebarSkeleton />}>
-        <SidebarWrapper />
-      </Suspense>
+      <AppSidebar
+        userEmail={
+          <Suspense fallback={<UserEmailSkeleton />}>
+            <UserEmailFooter />
+          </Suspense>
+        }
+      />
       <SidebarInset>
         {/* Mobile Header */}
         <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border/50 px-4">

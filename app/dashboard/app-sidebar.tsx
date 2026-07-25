@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
-export function AppSidebar({ email }: { email: string }) {
+export function AppSidebar({ userEmail }: { userEmail?: React.ReactNode }) {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
 
@@ -76,11 +76,7 @@ export function AppSidebar({ email }: { email: string }) {
 
       <SidebarFooter className="p-4 border-t border-sidebar-border">
         <div className="mb-2 px-2 text-xs text-sidebar-foreground/70 truncate min-h-[16px] flex items-center">
-          {email ? (
-            email
-          ) : (
-            <div className="h-3 w-28 bg-sidebar-foreground/20 rounded animate-pulse" />
-          )}
+          {userEmail ?? <div className="h-3 w-28 bg-sidebar-foreground/20 rounded animate-pulse" />}
         </div>
         <SidebarMenu>
           <SidebarMenuItem>

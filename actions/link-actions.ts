@@ -43,6 +43,10 @@ export async function updateLink(id: string, data: { originalUrl?: string; expir
     return { error: "Link not found or unauthorized" };
   }
 
+  if (data.expiresAt && data.expiresAt < new Date()) {
+    return { error: "Expiration date must be in the future." };
+  }
+
   await prisma.link.update({
     where: { id },
     data: {

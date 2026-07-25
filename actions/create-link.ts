@@ -55,7 +55,12 @@ const createLinkSchema = z.object({
       message: "That slug isn't allowed. Please choose a different one.",
     })
     .optional(),
-  expiresAt: z.string().optional(),
+  expiresAt: z
+    .string()
+    .optional()
+    .refine((val) => !val || new Date(val) > new Date(), {
+      message: "Expiration date must be in the future.",
+    }),
 });
 
 async function checkUrlSafety(url: string): Promise<{ flagged: boolean; reason?: string }> {
@@ -155,17 +160,33 @@ export async function createLink(formData: FormData) {
 
   const safety = await checkUrlSafety(parsed.data.originalUrl);
 
-  const newLink = await prisma.link.create({
-    data: {
-      slug,
-      originalUrl: parsed.data.originalUrl,
-      userId: user.id,
-      expiresAt: parsed.data.expiresAt ? new Date(parsed.data.expiresAt) : null,
-      flaggedUnsafe: safety.flagged,
-      flagReason: safety.reason ?? null,
-      flagCheckedAt: new Date(),
-    } as any,
-  });
+  let newLink: any;
+  try {
+    newLink = await prisma.link.create({
+      data: {
+        slug,
+        originalUrl: parsed.data.originalUrl,
+        userId: user.id,
+        expiresAt: parsed.data.expiresAt ? new Date(parsed.data.expiresAt) : null,
+        flaggedUnsafe: safety.flagged,
+        flagReason: safety.reason ?? null,
+        flagCheckedAt: new Date(),
+      } as any,
+    });
+  } catch (err: any) {
+    if (err?.message?.includes("flaggedUnsafe")) {
+      newLink = await prisma.link.create({
+        data: {
+          slug,
+          originalUrl: parsed.data.originalUrl,
+          userId: user.id,
+          expiresAt: parsed.data.expiresAt ? new Date(parsed.data.expiresAt) : null,
+        },
+      });
+    } else {
+      throw err;
+    }
+  }
 
   // Pre-populate Redis cache for zero-latency redirects
   if (redis) {

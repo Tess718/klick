@@ -78,6 +78,7 @@ export function CreateLinkForm() {
         <Input 
           type="datetime-local" 
           name="expiresAt"
+          min={new Date().toISOString().slice(0, 16)}
         />
       </div>
 
