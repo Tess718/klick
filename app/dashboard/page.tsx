@@ -117,7 +117,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </Card>
 
         {/* Secondary Stats */}
-        <div className="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-2 gap-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">

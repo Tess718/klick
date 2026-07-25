@@ -18,12 +18,15 @@ model User {
 }
 
 model Link {
-  id          String    @id @default(cuid())
-  slug        String    @unique
-  originalUrl String
-  userId      String
-  expiresAt   DateTime?
-  createdAt   DateTime  @default(now())
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  originalUrl   String
+  userId        String
+  expiresAt     DateTime?
+  createdAt     DateTime  @default(now())
+  flaggedUnsafe Boolean   @default(false)
+  flagReason    String?
+  flagCheckedAt DateTime?
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   clicks Click[]

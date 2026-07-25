@@ -16,6 +16,8 @@ export interface CachedLink {
   id: string;
   originalUrl: string;
   expiresAt: string | null;
+  flaggedUnsafe?: boolean;
+  flagReason?: string | null;
 }
 
 // Rate limiters using sliding windows

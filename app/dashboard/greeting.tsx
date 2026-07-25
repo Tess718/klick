@@ -50,7 +50,7 @@ export function Greeting({ name }: { name: string | null }) {
   if (!name) return null; // Fallback, though OnboardingModal should prevent this.
 
   return (
-    <div className="bg-cobalt p-8 rounded-2xl border border-cobalt/20 flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 shadow-sm relative overflow-hidden gap-4">
+    <div className="bg-cobalt p-8 rounded-2xl border border-cobalt/20 flex flex-col sm:flex-row sm:items-center sm:justify-between shadow-sm relative overflow-hidden gap-4">
       <div className="relative z-10 flex-1">
         <h2 className="text-2xl font-bold tracking-tight text-paper flex items-center gap-3">
           {greeting}, {name}

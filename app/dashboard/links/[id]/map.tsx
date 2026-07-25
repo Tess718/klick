@@ -66,7 +66,7 @@ export function WorldMapChart({ data }: { data: CountryData[] }) {
 
           return (
             <Marker key={country} coordinates={coords}>
-              <title>{fullName}: {_count} click{_count === 1 ? '' : 's'}</title>
+              <title>{`${fullName}: ${_count} click${_count === 1 ? '' : 's'}`}</title>
               <circle
                 r={sizeScale(_count)}
                 fill="#193497" // COBALT

@@ -15,17 +15,24 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-export default async function AnalyticsPage() {
+import { DateRangePicker } from "./date-range-picker";
+
+export default async function AnalyticsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login");
   }
 
-  const analytics = await getGlobalAnalytics(session.user.id);
+  const { range = "7d" } = await searchParams;
+  const analytics = await getGlobalAnalytics(session.user.id, range);
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto w-full pb-10">
-      <div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -37,10 +44,14 @@ export default async function AnalyticsPage() {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+
+        <Suspense fallback={<div className="h-8 w-48 bg-muted/60 rounded-xl animate-pulse" />}>
+          <DateRangePicker />
+        </Suspense>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">

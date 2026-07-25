@@ -31,6 +31,8 @@ export async function GET(
   let linkId: string | null = null;
   let originalUrl: string | null = null;
   let expiresAt: Date | null = null;
+  let flaggedUnsafe = false;
+  let flagReason: string | null = null;
 
   // 2. Redis-first lookup to avoid Postgres DB round-trip latency
   if (redis) {
@@ -43,6 +45,8 @@ export async function GET(
         linkId = parsedData.id;
         originalUrl = parsedData.originalUrl;
         expiresAt = parsedData.expiresAt ? new Date(parsedData.expiresAt) : null;
+        flaggedUnsafe = !!parsedData.flaggedUnsafe;
+        flagReason = parsedData.flagReason ?? null;
       }
     } catch (err) {
       console.warn("[Redis Cache Miss/Error] Falling back to Prisma DB:", err);
@@ -62,6 +66,8 @@ export async function GET(
     linkId = link.id;
     originalUrl = link.originalUrl;
     expiresAt = link.expiresAt;
+    flaggedUnsafe = !!(link as any).flaggedUnsafe;
+    flagReason = (link as any).flagReason ?? null;
 
     // Cache the resolved link in Redis for 24 hours
     if (redis) {
@@ -69,6 +75,8 @@ export async function GET(
         id: link.id,
         originalUrl: link.originalUrl,
         expiresAt: link.expiresAt ? link.expiresAt.toISOString() : null,
+        flaggedUnsafe: !!(link as any).flaggedUnsafe,
+        flagReason: (link as any).flagReason ?? null,
       };
       redis
         .set(`${LINK_CACHE_PREFIX}${slug}`, JSON.stringify(cachePayload), {
@@ -81,6 +89,14 @@ export async function GET(
   // 4. Expiration check
   if (expiresAt && expiresAt < new Date()) {
     return NextResponse.redirect(new URL("/expired", request.url));
+  }
+
+  // 4.5. Safety warning check (Warn-and-allow interstitial)
+  if (flaggedUnsafe) {
+    const warningUrl = new URL("/link-warning", request.url);
+    warningUrl.searchParams.set("destination", originalUrl);
+    warningUrl.searchParams.set("reason", flagReason ?? "unknown");
+    return NextResponse.redirect(warningUrl);
   }
 
   // 5. Fire-and-forget asynchronous click logging (does NOT delay redirect)

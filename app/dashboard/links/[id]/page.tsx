@@ -20,13 +20,23 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-export default async function LinkAnalyticsPage({ params }: { params: Promise<{ id: string }> }) {
+import { Suspense } from "react";
+import { DateRangePicker } from "../../analytics/date-range-picker";
+
+export default async function LinkAnalyticsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ range?: string }>;
+}) {
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login");
   }
 
   const { id } = await params;
+  const { range = "7d" } = await searchParams;
 
   const link = await prisma.link.findUnique({
     where: { id, userId: session.user.id },
@@ -36,13 +46,13 @@ export default async function LinkAnalyticsPage({ params }: { params: Promise<{ 
     notFound();
   }
 
-  const analytics = await getLinkAnalytics(id);
+  const analytics = await getLinkAnalytics(id, range);
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/^https?:\/\//, '') || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "localhost:3000";
   const shortUrl = `${baseUrl}/${link.slug}`;
 
   return (
     <div className="max-w-6xl mx-auto w-full pb-10">
-      <div className="mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -54,6 +64,10 @@ export default async function LinkAnalyticsPage({ params }: { params: Promise<{ 
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+
+        <Suspense fallback={<div className="h-8 w-48 bg-muted/60 rounded-xl animate-pulse" />}>
+          <DateRangePicker />
+        </Suspense>
       </div>
 
       {/* Header Info */}
@@ -97,7 +111,7 @@ export default async function LinkAnalyticsPage({ params }: { params: Promise<{ 
       </Card>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">

@@ -13,7 +13,8 @@ import {
   SidebarHeader, 
   SidebarMenu, 
   SidebarMenuButton, 
-  SidebarMenuItem 
+  SidebarMenuItem,
+  useSidebar
 } from "@/components/ui/sidebar";
 import { 
   Link2, 
@@ -25,6 +26,13 @@ import { signOut } from "next-auth/react";
 
 export function AppSidebar({ email }: { email: string }) {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const navigation = [
     { name: "Links", href: "/dashboard", icon: Link2, exact: true },
@@ -35,7 +43,7 @@ export function AppSidebar({ email }: { email: string }) {
   return (
     <Sidebar>
       <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <Link href="/" className="flex items-center">
+        <Link href="/" onClick={handleLinkClick} className="flex items-center">
           <Logo className="h-6 w-auto filter brightness-0 invert" />
         </Link>
       </SidebarHeader>
@@ -51,7 +59,10 @@ export function AppSidebar({ email }: { email: string }) {
                   : pathname.startsWith(item.href);
                 return (
                   <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton render={<Link href={item.href} />} isActive={isActive}>
+                    <SidebarMenuButton 
+                      render={<Link href={item.href} onClick={handleLinkClick} />} 
+                      isActive={isActive}
+                    >
                       <item.icon className="h-4 w-4" />
                       <span>{item.name}</span>
                     </SidebarMenuButton>
@@ -74,7 +85,10 @@ export function AppSidebar({ email }: { email: string }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton 
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={() => {
+                handleLinkClick();
+                signOut({ callbackUrl: '/' });
+              }}
               className="text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent"
             >
               <LogOut className="h-4 w-4" />

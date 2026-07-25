@@ -14,17 +14,27 @@ export function CreateLinkForm() {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+    setError(null);
+    setWarning(null);
     
     startTransition(async () => {
       const res = await createLink(formData);
       if (res.error) {
         setError(res.error);
       } else {
-        router.push("/dashboard");
+        if (res.flaggedUnsafe) {
+          setWarning("Heads up — this destination URL was flagged by Google Safe Browsing, but we've created your link anyway.");
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 2500);
+        } else {
+          router.push("/dashboard");
+        }
       }
     });
   };
@@ -32,6 +42,7 @@ export function CreateLinkForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
       {error && <div className="p-3 bg-destructive/10 text-destructive rounded-lg text-sm">{error}</div>}
+      {warning && <div className="p-3 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-lg text-sm font-medium">{warning}</div>}
       
       <div className="space-y-2">
         <label className="text-sm font-medium leading-none">Original URL</label>

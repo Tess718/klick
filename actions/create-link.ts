@@ -58,6 +58,61 @@ const createLinkSchema = z.object({
   expiresAt: z.string().optional(),
 });
 
+async function checkUrlSafety(url: string): Promise<{ flagged: boolean; reason?: string }> {
+  // 1. URLhaus (abuse.ch) keyless check — 100% free, zero card, zero signup threat feed
+  try {
+    const urlhausRes = await fetch("https://urlhaus-api.abuse.ch/v1/url/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ url }).toString(),
+    });
+
+    if (urlhausRes.ok) {
+      const urlhausData = await urlhausRes.json();
+      if (urlhausData.query_status === "ok") {
+        const threatType = urlhausData.threat || "MALWARE_DISTRIBUTION";
+        return { flagged: true, reason: threatType.toUpperCase() };
+      }
+    }
+  } catch (err) {
+    console.warn("[URLhaus Check Error]:", err);
+  }
+
+  // 2. Google Safe Browsing check (optional fallback if SAFE_BROWSING_API_KEY is present)
+  const apiKey = process.env.SAFE_BROWSING_API_KEY;
+  if (apiKey) {
+    try {
+      const res = await fetch(
+        `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${apiKey}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            client: { clientId: "redir", clientVersion: "1.0.0" },
+            threatInfo: {
+              threatTypes: ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE"],
+              platformTypes: ["ANY_PLATFORM"],
+              threatEntryTypes: ["URL"],
+              threatEntries: [{ url }],
+            },
+          }),
+        }
+      );
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.matches && data.matches.length > 0) {
+          return { flagged: true, reason: data.matches[0].threatType };
+        }
+      }
+    } catch (err) {
+      console.warn("[Safe Browsing Check Error]:", err);
+    }
+  }
+
+  return { flagged: false };
+}
+
 export async function createLink(formData: FormData) {
   const session = await auth();
   if (!session?.user) {
@@ -98,13 +153,18 @@ export async function createLink(formData: FormData) {
     return { error: "user not found" };
   }
 
+  const safety = await checkUrlSafety(parsed.data.originalUrl);
+
   const newLink = await prisma.link.create({
     data: {
       slug,
       originalUrl: parsed.data.originalUrl,
       userId: user.id,
       expiresAt: parsed.data.expiresAt ? new Date(parsed.data.expiresAt) : null,
-    },
+      flaggedUnsafe: safety.flagged,
+      flagReason: safety.reason ?? null,
+      flagCheckedAt: new Date(),
+    } as any,
   });
 
   // Pre-populate Redis cache for zero-latency redirects
@@ -113,6 +173,8 @@ export async function createLink(formData: FormData) {
       id: newLink.id,
       originalUrl: newLink.originalUrl,
       expiresAt: newLink.expiresAt ? newLink.expiresAt.toISOString() : null,
+      flaggedUnsafe: safety.flagged,
+      flagReason: safety.reason ?? null,
     };
     redis
       .set(`${LINK_CACHE_PREFIX}${slug}`, JSON.stringify(cachePayload), {
@@ -122,5 +184,10 @@ export async function createLink(formData: FormData) {
   }
 
   revalidatePath("/dashboard");
-  return { success: true, slug };
+  return {
+    success: true,
+    slug,
+    flaggedUnsafe: safety.flagged,
+    flagReason: safety.reason,
+  };
 }
