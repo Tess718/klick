@@ -5,7 +5,26 @@ import { DashboardMockup } from "@/components/dashboard-mockup";
 import { LandingHero } from "@/components/landing-hero";
 import { LandingFeatures } from "@/components/landing-features";
 import { LandingHowItWorks } from "@/components/landing-how-it-works";
-import { FAQItem } from "@/components/faq-item";
+import { FAQAccordion } from "@/components/faq-accordion";
+
+const FAQS = [
+  {
+    question: "Is Klick really free?",
+    answer: "Yes! Currently, Klick is completely free to use. We built this platform to provide high-quality analytics for everyone without locking essential features behind a paywall."
+  },
+  {
+    question: "How accurate is the location tracking?",
+    answer: "We use advanced IP geolocation databases that map clicks down to the city level with over 95% accuracy. However, users on VPNs or certain enterprise networks may appear in different locations."
+  },
+  {
+    question: "Do my short links expire?",
+    answer: "By default, links never expire. However, you can set a custom expiration date for any link, which is perfect for time-sensitive campaigns or flash sales."
+  },
+  {
+    question: "Can I edit a link after I create it?",
+    answer: "Absolutely. You can log into your dashboard at any time to change the destination URL, update the alias, or modify the expiration date without having to generate a new short link."
+  }
+];
 
 export default function Home() {
   return (
@@ -71,24 +90,7 @@ export default function Home() {
         {/* FAQ Section */}
         <div className="mt-24 md:mt-24 max-w-3xl w-full text-left px-6 md:px-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-12 text-center tracking-tight">Frequently Asked Questions</h2>
-          <div className="flex flex-col gap-2">
-            <FAQItem 
-              question="Is Klick really free?" 
-              answer="Yes! Currently, Klick is completely free to use. We built this platform to provide high-quality analytics for everyone without locking essential features behind a paywall."
-            />
-            <FAQItem 
-              question="How accurate is the location tracking?" 
-              answer="We use advanced IP geolocation databases that map clicks down to the city level with over 95% accuracy. However, users on VPNs or certain enterprise networks may appear in different locations."
-            />
-            <FAQItem 
-              question="Do my short links expire?" 
-              answer="By default, links never expire. However, you can set a custom expiration date for any link, which is perfect for time-sensitive campaigns or flash sales."
-            />
-            <FAQItem 
-              question="Can I edit a link after I create it?" 
-              answer="Absolutely. You can log into your dashboard at any time to change the destination URL, update the alias, or modify the expiration date without having to generate a new short link."
-            />
-          </div>
+          <FAQAccordion items={FAQS} />
         </div>
 
         {/* Final CTA */}
